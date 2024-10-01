@@ -88,17 +88,18 @@ export const handleSignup = async ({
       return;
   }
   try {
+    const timestamp = new Date().toISOString();
     await signUp({
       username: email,
       password,
-      // options: {
-      //   userAttributes: {
-      //     email,
-      //     name,
-      //     createdAt: new Date().toISOString(),
-      //     role: "user",
-      //   },
-      // },
+      options: {
+        userAttributes: {
+          email,
+          name,
+          "custom:role": "user",
+          "custom:createdAt": timestamp,
+        },
+      },
     });
     navigate("/");
   } catch (error: any) {
