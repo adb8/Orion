@@ -91,14 +91,14 @@ export const handleSignup = async ({
     await signUp({
       username: email,
       password,
-      options: {
-        userAttributes: {
-          email,
-          name,
-          createdAt: new Date().toISOString(),
-          role: "user",
-        },
-      },
+      // options: {
+      //   userAttributes: {
+      //     email,
+      //     name,
+      //     createdAt: new Date().toISOString(),
+      //     role: "user",
+      //   },
+      // },
     });
     navigate("/");
   } catch (error: any) {
