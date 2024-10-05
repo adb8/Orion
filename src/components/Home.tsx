@@ -1,16 +1,8 @@
-import { logout } from "../services/auth.service";
-import { useNavigate, NavigateFunction } from "react-router-dom";
 
 const Home = () => {
-  const navigate: NavigateFunction = useNavigate();
   return (
     <div>
-      <button
-        onClick={() => {
-          logout({
-            navigate,
-          });
-        }}>
+      <button>
         Log out
       </button>
     </div>

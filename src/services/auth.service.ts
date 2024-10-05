@@ -14,8 +14,6 @@ export const handleLogin = async ({
   email: string;
   password: string;
   rememberMe: boolean;
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   setPassword: React.Dispatch<React.SetStateAction<string>>;
   setRememberMe: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,33 +46,27 @@ export const handleLogin = async ({
 export const handleSignup = async ({
   email,
   password,
-  name,
   passwordConfirm,
   rememberMe,
   setEmail,
   setPassword,
-  setName,
   setPasswordConfirm,
   setRememberMe,
   navigate,
 }: {
   email: string;
   password: string;
-  name: string;
   passwordConfirm: string;
   rememberMe: boolean;
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   setPassword: React.Dispatch<React.SetStateAction<string>>;
-  setName: React.Dispatch<React.SetStateAction<string>>;
   setPasswordConfirm: React.Dispatch<React.SetStateAction<string>>;
   setRememberMe: React.Dispatch<React.SetStateAction<boolean>>;
   navigate: NavigateFunction;
 }) => {
-  console.log(email, password, passwordConfirm, name, rememberMe);
+  console.log(email, password, passwordConfirm, rememberMe);
   switch (true) {
-    case !email || !password || !passwordConfirm || !name:
+    case !email || !password || !passwordConfirm:
       alert("All input fields are required");
       return;
     case password !== passwordConfirm:
@@ -95,13 +87,12 @@ export const handleSignup = async ({
       options: {
         userAttributes: {
           email,
-          name,
           "custom:role": "user",
           "custom:createdAt": timestamp,
         },
       },
     });
-    navigate("/");
+    navigate("/auth/finish-signup");
   } catch (error: any) {
     console.error(error);
     if (error.response) {
@@ -112,40 +103,59 @@ export const handleSignup = async ({
   setEmail("");
   setPassword("");
   setPasswordConfirm("");
-  setName("");
   setRememberMe(false);
+};
+
+export const completeSignup = async ({
+  firstName,
+  lastName,
+  phoneNumber,
+  age,
+  country,
+  setFirstName,
+  setLastName,
+  setPhoneNumber,
+  setAge,
+  setCountry,
+  navigate,
+  receiveMessages,
+  setReceiveMessages,
+}: {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  age: number | null;
+  country: string;
+  receiveMessages: boolean;
+  setFirstName: React.Dispatch<React.SetStateAction<string>>;
+  setLastName: React.Dispatch<React.SetStateAction<string>>;
+  setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
+  setAge: React.Dispatch<React.SetStateAction<number | null>>;
+  setCountry: React.Dispatch<React.SetStateAction<string>>;
+  navigate: NavigateFunction;
+  setReceiveMessages: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  console.log(firstName, lastName, phoneNumber, age, country, receiveMessages);
+  switch (true) {
+    case !firstName || !lastName || !phoneNumber || !age || !country:
+      alert("All input fields are required");
+      return;
+  }
+  navigate("/");
+  setFirstName("");
+  setLastName("");
+  setPhoneNumber("");
+  setAge(null);
+  setCountry("");
+  setReceiveMessages(false);
 };
 
 export const handleThirdPartyLogin = async ({ provider }: { provider: string }) => {
   return alert(`To be implemented: ${provider}`);
 };
 
-export const logout = ({ navigate }: { navigate: NavigateFunction }) => {
-  localStorage.removeItem("user");
-  navigate("/login");
-};
-
-export const getEmail = () => {
-  const user = localStorage.getItem("user");
-  const email = user ? JSON.parse(user).email : null;
-  return email;
-};
-
-export const getName = () => {
-  const user = localStorage.getItem("user");
-  const name = user ? JSON.parse(user).name : null;
-  return name;
-};
-
-export const getToken = () => {
-  const user = localStorage.getItem("user");
-  const token = user ? JSON.parse(user).accessToken : null;
-  return token;
-};
-
-export const isLoggedIn = () => {
-  const user = localStorage.getItem("user");
-  return user ? true : false;
+export const isAuthenticated = async () => {
+  return true;
 };
 
 export const providers = [

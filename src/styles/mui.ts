@@ -18,4 +18,19 @@ export const inputStyles = {
   "& .MuiInputLabel-root.Mui-focused": {
     color: "white",
   },
+  '.MuiOutlinedInput-root': {
+    color: 'white',
+  },
+  '.MuiOutlinedInput-notchedOutline': {
+    borderColor: 'white',
+  },
+  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    borderColor: 'white',
+  },
+  '&:hover .MuiOutlinedInput-notchedOutline': {
+    borderColor: 'white',
+  },
+  '.MuiSvgIcon-root': {
+    color: 'white',
+  },
 };

@@ -5,9 +5,6 @@ import {
   handleLogin,
   handleThirdPartyLogin,
   providers,
-  getEmail,
-  getName,
-  getToken,
 } from "../services/auth.service";
 import { TextField, Button } from "@mui/material";
 import { inputStyles } from "../styles/mui";
@@ -33,7 +30,7 @@ const Login = () => {
           label="Email address"
           size="small"
           variant="outlined"
-          className="w-[340px]"
+          className="w-[350px]"
           sx={inputStyles}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -46,13 +43,13 @@ const Login = () => {
           size="small"
           type="password"
           variant="outlined"
-          className="w-[340px]"
+          className="w-[350px]"
           sx={inputStyles}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="flex items-center my-2 mb-3 w-[340px] px-5">
+      <div className="flex items-center my-2 mb-3 w-[350px] px-5">
         <div className="flex items-center space-x-2 mr-auto">
           <input
             type="checkbox"
@@ -84,20 +81,17 @@ const Login = () => {
                 email,
                 password,
                 rememberMe,
-                loading,
-                setLoading,
                 setEmail,
                 setPassword,
                 setRememberMe,
                 navigate,
               });
-              console.log(getEmail(), getName(), getToken());
             } finally {
               setLoading(false);
             }
           }}
           type="submit"
-          className="w-[340px] h-10"
+          className="w-[350px] h-10"
           sx={{
             backgroundColor: "rgb(59, 113, 203)",
             color: "white",
@@ -111,12 +105,12 @@ const Login = () => {
       <div className="my-3">
         <p className="text-white">
           Don't have an account?{" "}
-          <a className="text-[rgb(88,142,237)]" href="/signup">
+          <a className="text-[rgb(88,142,237)]" href="/auth/signup">
             Sign up
           </a>
         </p>
       </div>
-      <div className="flex items-center w-[340px] text-white px-4">
+      <div className="flex items-center w-[350px] text-white px-4">
         <hr className="flex-grow bg-white" />
         <p className="mx-2">Or log in with</p>
         <hr className="flex-grow bg-white" />

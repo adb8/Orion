@@ -5,9 +5,6 @@ import {
   handleSignup,
   handleThirdPartyLogin,
   providers,
-  getEmail,
-  getName,
-  getToken,
 } from "../services/auth.service";
 import { inputStyles } from "../styles/mui";
 import { TextField, Button } from "@mui/material";
@@ -18,7 +15,6 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [name, setName] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   return (
@@ -35,7 +31,7 @@ const Signup = () => {
           label="Email address"
           size="small"
           variant="outlined"
-          className="w-[340px]"
+          className="w-[350px]"
           sx={inputStyles}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -48,7 +44,7 @@ const Signup = () => {
           size="small"
           variant="outlined"
           type="password"
-          className="w-[340px]"
+          className="w-[350px]"
           sx={inputStyles}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -61,25 +57,13 @@ const Signup = () => {
           type="password"
           size="small"
           variant="outlined"
-          className="w-[340px]"
+          className="w-[350px]"
           sx={inputStyles}
           value={passwordConfirm}
           onChange={(e) => setPasswordConfirm(e.target.value)}
         />
       </div>
-      <div className="flex flex-col items-center space-y-4 my-3 mt-1">
-        <TextField
-          id="outlined-basic"
-          label="Full name"
-          size="small"
-          variant="outlined"
-          className="w-[340px]"
-          sx={inputStyles}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div className="flex items-center my-2 w-[340px] px-5 justify-center">
+      <div className="flex items-center my-2 w-[350px] px-5 justify-center">
         <div className="flex items-center space-x-2 mr-auto">
           <input
             type="checkbox"
@@ -104,25 +88,20 @@ const Signup = () => {
               handleSignup({
                 email,
                 password,
-                name,
                 passwordConfirm,
                 rememberMe,
-                loading,
-                setLoading,
                 setEmail,
                 setPassword,
-                setName,
                 setPasswordConfirm,
                 setRememberMe,
                 navigate,
               });
-              console.log(getEmail(), getName(), getToken());
             } finally {
               setLoading(false);
             }
           }}
           type="submit"
-          className="w-[340px] h-10"
+          className="w-[350px] h-10"
           sx={{
             backgroundColor: "rgb(59, 113, 203)",
             color: "white",
@@ -136,12 +115,12 @@ const Signup = () => {
       <div className="my-3">
         <p className="text-white">
           Already have an account?{" "}
-          <a className="text-[rgb(88,142,237)]" href="/login">
+          <a className="text-[rgb(88,142,237)]" href="/auth/login">
             Log in
           </a>
         </p>
       </div>
-      <div className="flex items-center w-[340px] text-white px-2">
+      <div className="flex items-center w-[350px] text-white px-2">
         <hr className="flex-grow bg-white" />
         <p className="mx-2">Or sign up with</p>
         <hr className="flex-grow bg-white" />
