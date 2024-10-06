@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { isAuthenticated } from "./helpers";
+import { isAuthenticated } from "../services/auth.service";
 
 const Protected = () => {
   const [auth, setAuth] = useState<boolean | null>(null);

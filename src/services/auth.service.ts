@@ -1,6 +1,6 @@
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 import { NavigateFunction } from "react-router-dom";
-import { signIn, signUp } from "@aws-amplify/auth";
+import { signIn, signUp, getCurrentUser } from "@aws-amplify/auth";
 
 export const handleLogin = async ({
   email,
@@ -155,7 +155,9 @@ export const handleThirdPartyLogin = async ({ provider }: { provider: string }) 
 };
 
 export const isAuthenticated = async () => {
-  return true;
+  const { username, userId, signInDetails } = await getCurrentUser();
+  if (username && userId && signInDetails) return true;
+  return false;
 };
 
 export const providers = [

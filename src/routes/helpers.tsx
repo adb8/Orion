@@ -1,4 +1,5 @@
 import { redirect } from "react-router-dom";
+import { isAuthenticated } from "../services/auth.service";
 
 export const handleProtected = async () => {
   const auth = await isAuthenticated();
@@ -14,8 +15,4 @@ export const handleUnprotected = async () => {
     return redirect("/");
   }
   return null
-};
-
-export const isAuthenticated = async () => {
-  return true;
 };
