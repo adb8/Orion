@@ -34,8 +34,7 @@ export const handleLogin = async ({
   } catch (error: any) {
     console.error(error);
     if (error.response) {
-      const errorMessage = error.response.data.message;
-      alert(errorMessage);
+      alert(error.response.data.message);
     }
   }
   setEmail("");
@@ -92,7 +91,7 @@ export const handleSignup = async ({
         },
       },
     });
-    navigate("/auth/finish-signup");
+    navigate("/auth/complete");
   } catch (error: any) {
     console.error(error);
     if (error.response) {
@@ -155,8 +154,12 @@ export const handleThirdPartyLogin = async ({ provider }: { provider: string }) 
 };
 
 export const isAuthenticated = async () => {
-  const { username, userId, signInDetails } = await getCurrentUser();
-  if (username && userId && signInDetails) return true;
+  try {
+    const user = await getCurrentUser();
+    if (user) return true;
+  } catch (error) {
+    return false;
+  }
   return false;
 };
 
