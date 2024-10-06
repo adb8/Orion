@@ -2,7 +2,7 @@ import { useState } from "react";
 import logo from "../assets/images/Orion_transparent-.png";
 import { useNavigate, NavigateFunction } from "react-router-dom";
 import { completeSignup } from "../services/auth.service";
-import { inputStyles } from "../styles/mui";
+import { inputStyles, selectStyles } from "../styles/mui";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { countryList } from "../assets/countryList";
 
@@ -14,6 +14,7 @@ const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [age, setAge] = useState<number | null>(null);
   const [country, setCountry] = useState("");
+  const [gender, setGender] = useState("");
   const [receiveMessages, setReceiveMessages] = useState(false);
 
   return (
@@ -24,30 +25,45 @@ const Signup = () => {
       <div className="flex my-2 text-lg">
         <p className="text-white">Complete account creation</p>
       </div>
-      <div className="flex flex-col items-center space-y-4 my-3">
+      <div className="flex flex-row items-center space-x-4 my-3 w-[350px]">
         <TextField
           id="outlined-basic"
           label="First name"
+          type="text"
           size="small"
           variant="outlined"
-          className="w-[350px]"
           sx={inputStyles}
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
         />
-      </div>
-      <div className="flex flex-col items-center space-y-4 my-3 mt-1">
         <TextField
           id="outlined-basic"
           label="Last name"
           size="small"
           variant="outlined"
-          type="password"
-          className="w-[350px]"
+          type="text"
           sx={inputStyles}
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
         />
+      </div>
+      <div className="flex flex-col items-center space-y-4 my-3 mt-1">
+        <TextField
+          id="outlined-basic"
+          label="Gender"
+          size="small"
+          variant="outlined"
+          select
+          className="w-[350px]"
+          sx={inputStyles}
+          SelectProps={selectStyles}
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}>
+          <MenuItem value="male">Male</MenuItem>
+          <MenuItem value="female">Female</MenuItem>
+          <MenuItem value="other">Other</MenuItem>
+          <MenuItem value="prefer_not_to_say">Prefer not to say</MenuItem>
+        </TextField>
       </div>
       <div className="flex flex-col items-center space-y-4 my-3 mt-1">
         <TextField
@@ -59,35 +75,10 @@ const Signup = () => {
           className="w-[350px]"
           value={country}
           sx={inputStyles}
-          SelectProps={{
-            MenuProps: {
-              PaperProps: {
-                sx: {
-                  bgcolor: "rgb(55, 55, 55)",
-                  color: "white",
-                  width: "350px",
-                  "&::-webkit-scrollbar": {
-                    width: "0px",
-                    height: "0px",
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "transparent",
-                  },
-                  "&::-webkit-scrollbar-track": {
-                    backgroundColor: "transparent",
-                  },
-                  boxShadow: "none",
-                  borderRadius: "0px",
-                },
-              },
-            },
-          }}
+          SelectProps={selectStyles}
           onChange={(e) => setCountry(e.target.value)}>
           {Object.entries(countryList).map(([code, name]) => (
-            <MenuItem key={code} value={name} sx={{
-              textAlign: "center",
-              color: "white",
-            }}>
+            <MenuItem key={code} value={name}>
               {name}
             </MenuItem>
           ))}

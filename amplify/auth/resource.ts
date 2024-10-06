@@ -9,13 +9,39 @@ export const auth = defineAuth({
     email: true,
   },
   userAttributes: {
-    "custom:role": {
-      dataType: "String",
+    email: {
+      required: true,
       mutable: false,
-      minLen: 1,
-      maxLen: 255,
     },
-    "custom:name": {
+    givenName: {
+      required: false,
+      mutable: true,
+    },
+    familyName: {
+      required: false,
+      mutable: true,
+    },
+    phoneNumber: {
+      required: false,
+      mutable: true,
+    },
+    gender: {
+      required: false,
+      mutable: true,
+    },
+    "custom:age": {
+      dataType: "Number",
+      mutable: true,
+    },
+    "custom:country": {
+      dataType: "String",
+      mutable: true,
+    },
+    "custom:receiveMessages": {
+      dataType: "Boolean",
+      mutable: true,
+    },
+    "custom:role": {
       dataType: "String",
       mutable: false,
       minLen: 1,

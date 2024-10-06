@@ -34,3 +34,27 @@ export const inputStyles = {
     color: 'white',
   },
 };
+
+export const selectStyles = {
+  MenuProps: {
+    PaperProps: {
+      sx: {
+        bgcolor: "rgb(55, 55, 55)",
+        color: "white",
+        width: "350px",
+        "&::-webkit-scrollbar": {
+          width: "0px",
+          height: "0px",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "transparent",
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "transparent",
+        },
+        boxShadow: "none",
+        borderRadius: "0px",
+      },
+    },
+  },
+}
