@@ -1,18 +1,12 @@
 import { redirect } from "react-router-dom";
 import { isAuthenticated } from "../services/auth.service";
 
-export const handleProtected = async () => {
+export const handleRouteProtection = async (routeType: string) => {
   const auth = await isAuthenticated();
-  if (!auth) {
+  if (routeType === "PROTECTED" && !auth) {
     return redirect("/auth/login");
-  }
-  return null;
-};
-
-export const handleUnprotected = async () => {
-  const auth = await isAuthenticated();
-  if (auth) {
+  } else if (routeType === "UNPROTECTED" && auth) {
     return redirect("/");
   }
-  return null
+  return null;
 };

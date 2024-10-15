@@ -13,7 +13,6 @@ const Signup = () => {
   const [code, setCode] = useState("");
   const [email, setEmail] = useState(searchParams.get("email") || "");
   console.log(searchParams.get("email"));
-  console.log(email);
 
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col">

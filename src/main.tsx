@@ -8,11 +8,14 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
+import { AuthProvider } from "./contexts/AuthContext";
 
 Amplify.configure(outputs);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </StrictMode>
 );

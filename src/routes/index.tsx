@@ -9,38 +9,35 @@ import Home from "../components/Home";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
 import CompleteSignup from "../components/CompleteSignup";
-import Protected from "./protected";
 import ConfirmSignup from "../components/ConfirmSignup";
 import _404 from "../components/404";
-import { handleProtected, handleUnprotected } from "./helpers";
+import { handleRouteProtection } from "./helpers";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      <Route element={<Protected />}>
-        <Route index element={<Home />} loader={async () => await handleProtected()} />
-      </Route>
+        <Route index element={<Home />} loader={async () => await handleRouteProtection("PROTECTED")} />
       <Route path="auth">
         <Route index element={<Navigate to="login" />} />
-        <Route path="login" element={<Login />} loader={async () => await handleUnprotected()} />
+        <Route path="login" element={<Login />} loader={async () => await handleRouteProtection("UNPROTECTED")} />
         <Route path="signup">
-          <Route index element={<Signup />} loader={async () => await handleUnprotected()} />
+          <Route index element={<Signup />} loader={async () => await handleRouteProtection("UNPROTECTED")} />
           <Route path="complete">
             <Route
               index
               element={<CompleteSignup />}
-              loader={async () => await handleProtected()}
+              loader={async () => await handleRouteProtection("PROTECTED")}
             />
             <Route
               path="confirm"
               element={<ConfirmSignup />}
-              loader={async () => await handleProtected()}
+              loader={async () => await handleRouteProtection("PROTECTED")}
             />
           </Route>
           <Route
             path="confirm"
             element={<ConfirmSignup />}
-            loader={async () => await handleUnprotected()}
+            loader={async () => await handleRouteProtection("UNPROTECTED")}
           />
         </Route>
       </Route>
