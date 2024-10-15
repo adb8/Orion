@@ -1,7 +1,7 @@
 import { useState } from "react";
 import logo from "../assets/images/Orion_transparent-.png";
 import { useNavigate, NavigateFunction } from "react-router-dom";
-import { completeSignup } from "../services/auth.service";
+import { handleSignupComplete } from "../services/auth.service";
 import { inputStyles, selectStyles } from "../styles/mui";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { countryList } from "../assets/countryList";
@@ -146,18 +146,20 @@ const Signup = () => {
             if (loading) return;
             setLoading(true);
             try {
-              completeSignup({
+              handleSignupComplete({
                 navigate,
                 firstName,
                 lastName,
                 phoneNumber,
                 age,
                 country,
+                gender,
                 setFirstName,
                 setLastName,
                 setPhoneNumber,
                 setAge,
                 setCountry,
+                setGender,
                 receiveMessages,
                 setReceiveMessages,
               });

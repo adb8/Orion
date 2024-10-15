@@ -10,6 +10,8 @@ import Login from "../components/Login";
 import Signup from "../components/Signup";
 import CompleteSignup from "../components/CompleteSignup";
 import Protected from "./protected";
+import ConfirmSignup from "../components/ConfirmSignup";
+import _404 from "../components/404";
 import { handleProtected, handleUnprotected } from "./helpers";
 
 const router = createBrowserRouter(
@@ -21,14 +23,28 @@ const router = createBrowserRouter(
       <Route path="auth">
         <Route index element={<Navigate to="login" />} />
         <Route path="login" element={<Login />} loader={async () => await handleUnprotected()} />
-        <Route path="signup" element={<Signup />} loader={async () => await handleUnprotected()} />
-        <Route
-          path="complete"
-          element={<CompleteSignup />}
-          loader={async () => await handleProtected()}
-        />
+        <Route path="signup">
+          <Route index element={<Signup />} loader={async () => await handleUnprotected()} />
+          <Route path="complete">
+            <Route
+              index
+              element={<CompleteSignup />}
+              loader={async () => await handleProtected()}
+            />
+            <Route
+              path="confirm-phone"
+              element={<ConfirmSignup />}
+              loader={async () => await handleProtected()}
+            />
+          </Route>
+          <Route
+            path="confirm-email"
+            element={<ConfirmSignup />}
+            loader={async () => await handleUnprotected()}
+          />
+        </Route>
       </Route>
-      <Route path="*" element={<h1>404: Resource not found</h1>} />
+      <Route path="*" element={<_404/>} />
     </Route>
   )
 );

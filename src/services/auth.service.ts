@@ -1,6 +1,7 @@
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 import { NavigateFunction } from "react-router-dom";
-import { signIn, signUp, getCurrentUser } from "@aws-amplify/auth";
+import { signIn, signUp, getCurrentUser, confirmSignUp } from "@aws-amplify/auth";
+import { useAuth } from "../components/AuthProvider";
 
 export const handleLogin = async ({
   email,
@@ -20,22 +21,22 @@ export const handleLogin = async ({
   navigate: NavigateFunction;
 }) => {
   console.log(email, password, rememberMe);
+  const { isAuthenticated, user, setUser } = useAuth();
   if (!email || !password) {
     const error = "All input fields are required";
     alert(error);
     return;
   }
   try {
-    await signIn({
+    const { nextStep } = await signIn({
       username: email,
       password: password,
     });
+    console.log("nextStep", nextStep);
     navigate("/");
   } catch (error: any) {
     console.error(error);
-    if (error.response) {
-      alert(error.response.data.message);
-    }
+    alert(error.message);
   }
   setEmail("");
   setPassword("");
@@ -64,6 +65,7 @@ export const handleSignup = async ({
   navigate: NavigateFunction;
 }) => {
   console.log(email, password, passwordConfirm, rememberMe);
+  const { isAuthenticated, user, setUser } = useAuth();
   switch (true) {
     case !email || !password || !passwordConfirm:
       alert("All input fields are required");
@@ -80,24 +82,26 @@ export const handleSignup = async ({
   }
   try {
     const timestamp = new Date().toISOString();
-    await signUp({
+    const role = "user";
+    let user = {
       username: email,
-      password,
+      password: password,
       options: {
         userAttributes: {
-          email,
-          "custom:role": "user",
+          email: email,
+          "custom:role": role,
           "custom:createdAt": timestamp,
         },
       },
-    });
-    navigate("/auth/complete");
+    };
+    const { isSignUpComplete, userId, nextStep } = await signUp(user);
+    console.log("isSignUpComplete", isSignUpComplete);
+    console.log("userId", userId);
+    console.log("nextStep", nextStep);
+    // navigate("/auth/complete");
   } catch (error: any) {
     console.error(error);
-    if (error.response) {
-      const errorMessage = error.response.data.message;
-      alert(errorMessage);
-    }
+    alert(error.message);
   }
   setEmail("");
   setPassword("");
@@ -105,12 +109,14 @@ export const handleSignup = async ({
   setRememberMe(false);
 };
 
-export const completeSignup = async ({
+export const handleSignupComplete = async ({
   firstName,
   lastName,
   phoneNumber,
   age,
   country,
+  gender,
+  setGender,
   setFirstName,
   setLastName,
   setPhoneNumber,
@@ -126,6 +132,8 @@ export const completeSignup = async ({
   age: number | null;
   country: string;
   receiveMessages: boolean;
+  gender: string;
+  setGender: React.Dispatch<React.SetStateAction<string>>;
   setFirstName: React.Dispatch<React.SetStateAction<string>>;
   setLastName: React.Dispatch<React.SetStateAction<string>>;
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
@@ -134,18 +142,40 @@ export const completeSignup = async ({
   navigate: NavigateFunction;
   setReceiveMessages: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  console.log(firstName, lastName, phoneNumber, age, country, receiveMessages);
+  console.log(firstName, lastName, phoneNumber, age, country, receiveMessages, gender);
   switch (true) {
-    case !firstName || !lastName || !phoneNumber || !age || !country:
+    case !firstName || !lastName || !phoneNumber || !age || !country || !gender:
       alert("All input fields are required");
       return;
   }
+  try {
+    let user = JSON.parse(localStorage.getItem("user") || "");
+    if (!user) throw new Error("User not found");
+    user = {
+      ...user,
+      attributes: {
+        ...user.attributes,
+        given_name: firstName,
+        family_name: lastName,
+        phone_number: phoneNumber,
+        gender: gender,
+        "custom:age": age,
+        "custom:country": country,
+        "custom:receiveMessages": receiveMessages,
+      },
+    };
+    console.log(user);
+    localStorage.setItem("user", JSON.stringify(user));
+    const { nextStep } = await signUp(user);
+    console.log("nextStep", nextStep);
+  } catch (error) {}
   navigate("/");
   setFirstName("");
   setLastName("");
   setPhoneNumber("");
   setAge(null);
   setCountry("");
+  setGender("");
   setReceiveMessages(false);
 };
 
@@ -158,6 +188,7 @@ export const isAuthenticated = async () => {
     const user = await getCurrentUser();
     if (user) return true;
   } catch (error) {
+    console.error(error);
     return false;
   }
   return false;
