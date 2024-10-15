@@ -11,17 +11,25 @@ import Signup from "../components/Signup";
 import CompleteSignup from "../components/CompleteSignup";
 import ConfirmSignup from "../components/ConfirmSignup";
 import _404 from "../components/404";
-import { handleRouteProtection } from "./helpers";
+import { handleRouteProtection, homeRouteManagement } from "./helpers";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-        <Route index element={<Home />} loader={async () => await handleRouteProtection("PROTECTED")} />
+      <Route index element={<Home />} loader={async () => await homeRouteManagement()} />
       <Route path="auth">
         <Route index element={<Navigate to="login" />} />
-        <Route path="login" element={<Login />} loader={async () => await handleRouteProtection("UNPROTECTED")} />
+        <Route
+          path="login"
+          element={<Login />}
+          loader={async () => await handleRouteProtection("UNPROTECTED")}
+        />
         <Route path="signup">
-          <Route index element={<Signup />} loader={async () => await handleRouteProtection("UNPROTECTED")} />
+          <Route
+            index
+            element={<Signup />}
+            loader={async () => await handleRouteProtection("UNPROTECTED")}
+          />
           <Route path="complete">
             <Route
               index
@@ -41,7 +49,7 @@ const router = createBrowserRouter(
           />
         </Route>
       </Route>
-      <Route path="*" element={<_404/>} />
+      <Route path="*" element={<_404 />} />
     </Route>
   )
 );

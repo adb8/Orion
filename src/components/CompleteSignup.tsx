@@ -22,6 +22,7 @@ const Signup = () => {
       <div className="my-3">
         <img src={logo} width={250} alt="Orion logo image" />
       </div>
+      {/* <button onClick={() => handleSignout({ navigate })}>Log out</button> */}
       <div className="flex my-2 text-lg">
         <p className="text-white">Complete account creation</p>
       </div>

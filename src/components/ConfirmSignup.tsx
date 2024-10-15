@@ -11,8 +11,7 @@ const Signup = () => {
   const navigate: NavigateFunction = useNavigate();
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState("");
-  const [email, setEmail] = useState(searchParams.get("email") || "");
-  console.log(searchParams.get("email"));
+  const [email, _] = useState(searchParams.get("email") || "");
 
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col">

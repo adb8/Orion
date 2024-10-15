@@ -8,10 +8,8 @@ import {
 } from "../services/auth.service";
 import { TextField, Button } from "@mui/material";
 import { inputStyles } from "../styles/mui";
-import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
-  const { auth, setAuthStatus } = useAuth();
   const navigate: NavigateFunction = useNavigate();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -80,8 +78,6 @@ const Login = () => {
             setLoading(true);
             try {
               handleLogin({
-                auth,
-                setAuthStatus,
                 email,
                 password,
                 rememberMe,

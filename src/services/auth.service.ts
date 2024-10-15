@@ -1,6 +1,13 @@
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 import { NavigateFunction } from "react-router-dom";
-import { signIn, signUp, getCurrentUser, confirmSignUp, signOut } from "@aws-amplify/auth";
+import {
+  signIn,
+  signUp,
+  getCurrentUser,
+  confirmSignUp,
+  signOut,
+  updateUserAttributes,
+} from "@aws-amplify/auth";
 
 export const handleLogin = async ({
   email,
@@ -10,8 +17,6 @@ export const handleLogin = async ({
   setPassword,
   setRememberMe,
   navigate,
-  auth,
-  setAuthStatus,
 }: {
   email: string;
   password: string;
@@ -20,17 +25,11 @@ export const handleLogin = async ({
   setPassword: React.Dispatch<React.SetStateAction<string>>;
   setRememberMe: React.Dispatch<React.SetStateAction<boolean>>;
   navigate: NavigateFunction;
-  auth: string | null;
-  setAuthStatus: any;
 }) => {
   console.log(email, password, rememberMe);
-  if (auth === "AUTHENTICATED") {
-    return;
-  }
   if (!email || !password) {
     const error = "All input fields are required";
     alert(error);
-    setAuthStatus("UNAUTHENTICATED");
     return;
   }
   try {
@@ -38,16 +37,13 @@ export const handleLogin = async ({
       username: email,
       password: password,
     });
+    console.log(nextStep.signInStep);
     if (nextStep.signInStep === "DONE") {
-      setAuthStatus("AUTHENTICATED");
       navigate("/");
       return;
     } else if (nextStep.signInStep === "CONFIRM_SIGN_UP") {
-      setAuthStatus("UNAUTHENTICATED");
       navigate(`/auth/signup/confirm?email=${encodeURIComponent(email)}`);
       return;
-    } else {
-      console.log("nextStep", nextStep);
     }
   } catch (error: any) {
     console.error(error);
@@ -56,7 +52,6 @@ export const handleLogin = async ({
   setEmail("");
   setPassword("");
   setRememberMe(false);
-  setAuthStatus("UNAUTHENTICATED");
 };
 
 export const handleSignup = async ({
@@ -69,8 +64,6 @@ export const handleSignup = async ({
   setPasswordConfirm,
   setRememberMe,
   navigate,
-  auth,
-  setAuthStatus,
 }: {
   email: string;
   password: string;
@@ -81,28 +74,19 @@ export const handleSignup = async ({
   setPasswordConfirm: React.Dispatch<React.SetStateAction<string>>;
   setRememberMe: React.Dispatch<React.SetStateAction<boolean>>;
   navigate: NavigateFunction;
-  auth: string | null;
-  setAuthStatus: any;
 }) => {
   console.log(email, password, passwordConfirm, rememberMe);
-  if (auth === "AUTHENTICATED") {
-    return;
-  }
   switch (true) {
     case !email || !password || !passwordConfirm:
       alert("All input fields are required");
-      setAuthStatus("UNAUTHENTICATED");
       return;
     case password !== passwordConfirm:
       alert("Passwords do not match");
-      setAuthStatus("UNAUTHENTICATED");
       return;
     case password.length < 6:
       alert("Password length must be greater than 8 characters");
-      setAuthStatus("UNAUTHENTICATED");
       return;
     case !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email):
-      setAuthStatus("UNAUTHENTICATED");
       alert("Invalid email format");
       return;
   }
@@ -129,7 +113,6 @@ export const handleSignup = async ({
       "nextStep",
       nextStep.signUpStep
     );
-    setAuthStatus("UNAUTHENTICATED");
     if (nextStep.signUpStep === "DONE" || isSignUpComplete) {
       navigate("/");
       return;
@@ -145,7 +128,6 @@ export const handleSignup = async ({
   setPassword("");
   setPasswordConfirm("");
   setRememberMe(false);
-  setAuthStatus("UNAUTHENTICATED");
 };
 
 export const handleSignupConfirm = async ({
@@ -221,18 +203,33 @@ export const handleSignupComplete = async ({
       return;
   }
   try {
-  } catch (error) {}
+    const response = await updateUserAttributes({
+      userAttributes: {
+        given_name: firstName,
+        family_name: lastName,
+      },
+    });
+    console.log(response);
+  } catch (error: any) {
+    console.error(error);
+    alert(error.message);
+  }
   navigate("/");
   setFirstName("");
   setLastName("");
   setPhoneNumber("");
-  setAge(null);
+  setAge(-1);
   setCountry("");
   setGender("");
   setReceiveMessages(false);
 };
 
 export const handleSignout = async ({ navigate }: { navigate: NavigateFunction }) => {
+  const auth = await isAuthenticated();
+  if (!auth) {
+    navigate("/auth/login");
+    return;
+  }
   try {
     await signOut();
     navigate("/auth/login");
@@ -245,6 +242,7 @@ export const handleSignout = async ({ navigate }: { navigate: NavigateFunction }
 export const isAuthenticated = async () => {
   try {
     const user = await getCurrentUser();
+    console.log("user", user);
     if (user) return true;
   } catch (error) {
     console.error(error);
