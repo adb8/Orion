@@ -9,7 +9,7 @@ const _404 = () => {
     <div className="text-white text-lg w-full h-screen flex flex-col justify-center items-center">
       <div className="flex justify-center flex-col">
         <h1 className="text-4xl mb-4">404: Not Found</h1>
-        <h1>The requested resource wasn't found</h1>
+        <h1 className="mb-2">The requested resource wasn't found</h1>
         <h1 className="mb-6">{absoluteUrl} is not a valid URL</h1>
         <Button
           variant="contained"

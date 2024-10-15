@@ -32,13 +32,13 @@ const router = createBrowserRouter(
               loader={async () => await handleProtected()}
             />
             <Route
-              path="confirm-phone"
+              path="confirm"
               element={<ConfirmSignup />}
               loader={async () => await handleProtected()}
             />
           </Route>
           <Route
-            path="confirm-email"
+            path="confirm"
             element={<ConfirmSignup />}
             loader={async () => await handleUnprotected()}
           />

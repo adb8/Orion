@@ -1,7 +1,6 @@
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 import { NavigateFunction } from "react-router-dom";
 import { signIn, signUp, getCurrentUser, confirmSignUp } from "@aws-amplify/auth";
-import { useAuth } from "../components/AuthProvider";
 
 export const handleLogin = async ({
   email,
@@ -21,7 +20,6 @@ export const handleLogin = async ({
   navigate: NavigateFunction;
 }) => {
   console.log(email, password, rememberMe);
-  const { isAuthenticated, user, setUser } = useAuth();
   if (!email || !password) {
     const error = "All input fields are required";
     alert(error);
@@ -65,7 +63,6 @@ export const handleSignup = async ({
   navigate: NavigateFunction;
 }) => {
   console.log(email, password, passwordConfirm, rememberMe);
-  const { isAuthenticated, user, setUser } = useAuth();
   switch (true) {
     case !email || !password || !passwordConfirm:
       alert("All input fields are required");
@@ -95,10 +92,21 @@ export const handleSignup = async ({
       },
     };
     const { isSignUpComplete, userId, nextStep } = await signUp(user);
-    console.log("isSignUpComplete", isSignUpComplete);
-    console.log("userId", userId);
-    console.log("nextStep", nextStep);
-    // navigate("/auth/complete");
+    console.log(
+      "isSignUpComplete",
+      isSignUpComplete,
+      "userId",
+      userId,
+      "nextStep",
+      nextStep.signUpStep
+    );
+    if (nextStep.signUpStep === "DONE" || isSignUpComplete) {
+      navigate("/");
+      return;
+    } else if (nextStep.signUpStep === "CONFIRM_SIGN_UP") {
+      navigate(`/auth/signup/confirm?email=${encodeURIComponent(email)}`);
+      return;
+    }
   } catch (error: any) {
     console.error(error);
     alert(error.message);
@@ -107,6 +115,39 @@ export const handleSignup = async ({
   setPassword("");
   setPasswordConfirm("");
   setRememberMe(false);
+};
+
+export const handleSignupConfirm = async ({
+  email,
+  code,
+  setCode,
+  navigate,
+}: {
+  email: string | null;
+  code: string | null;
+  navigate: NavigateFunction;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+}) => {
+  console.log(email, code);
+  if (!email || !code) {
+    alert("All input fields are required");
+    return;
+  }
+  try {
+    const { isSignUpComplete, nextStep } = await confirmSignUp({
+      username: email,
+      confirmationCode: code,
+    });
+    if (isSignUpComplete) {
+      navigate("/auth/login");
+      return;
+    }
+    console.log(nextStep.signUpStep);
+  } catch (error: any) {
+    console.error(error);
+    alert(error.message);
+  }
+  setCode("");
 };
 
 export const handleSignupComplete = async ({
@@ -149,25 +190,6 @@ export const handleSignupComplete = async ({
       return;
   }
   try {
-    let user = JSON.parse(localStorage.getItem("user") || "");
-    if (!user) throw new Error("User not found");
-    user = {
-      ...user,
-      attributes: {
-        ...user.attributes,
-        given_name: firstName,
-        family_name: lastName,
-        phone_number: phoneNumber,
-        gender: gender,
-        "custom:age": age,
-        "custom:country": country,
-        "custom:receiveMessages": receiveMessages,
-      },
-    };
-    console.log(user);
-    localStorage.setItem("user", JSON.stringify(user));
-    const { nextStep } = await signUp(user);
-    console.log("nextStep", nextStep);
   } catch (error) {}
   navigate("/");
   setFirstName("");
@@ -179,10 +201,6 @@ export const handleSignupComplete = async ({
   setReceiveMessages(false);
 };
 
-export const handleThirdPartyLogin = async ({ provider }: { provider: string }) => {
-  return alert(`To be implemented: ${provider}`);
-};
-
 export const isAuthenticated = async () => {
   try {
     const user = await getCurrentUser();
@@ -191,7 +209,10 @@ export const isAuthenticated = async () => {
     console.error(error);
     return false;
   }
-  return false;
+};
+
+export const handleThirdPartyLogin = async ({ provider }: { provider: string }) => {
+  return alert(`To be implemented: ${provider}`);
 };
 
 export const providers = [
